@@ -257,6 +257,13 @@ pub fn record_batch_to_duckdb_data_chunk(
 fn primitive_array_to_flat_vector<T: ArrowPrimitiveType>(array: &PrimitiveArray<T>, out_vector: &mut FlatVector) {
     // assert!(array.len() <= out_vector.capacity());
     out_vector.copy::<T::Native>(array.values());
+    if let Some(nulls) = array.nulls() {
+        for (i, null) in nulls.into_iter().enumerate() {
+            if null {
+                out_vector.set_null(i);
+            }
+        }
+    }
 }
 
 fn primitive_array_to_flat_vector_cast<T: ArrowPrimitiveType>(
