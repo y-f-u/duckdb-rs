@@ -259,7 +259,7 @@ fn primitive_array_to_flat_vector<T: ArrowPrimitiveType>(array: &PrimitiveArray<
     out_vector.copy::<T::Native>(array.values());
     if let Some(nulls) = array.nulls() {
         for (i, null) in nulls.into_iter().enumerate() {
-            if null {
+            if !null {
                 out_vector.set_null(i);
             }
         }
